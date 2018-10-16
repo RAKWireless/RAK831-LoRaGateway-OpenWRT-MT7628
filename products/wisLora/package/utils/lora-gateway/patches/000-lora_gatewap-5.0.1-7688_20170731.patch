@@ -1,0 +1,113 @@
+--- a/libloragw/src/loragw_spi.native.c	2017-07-31 14:44:45.000000000 +0800
++++ b/libloragw/src/loragw_spi.native.c	2017-07-31 15:02:11.310349162 +0800
+@@ -54,8 +54,8 @@
+ #define READ_ACCESS     0x00
+ #define WRITE_ACCESS    0x80
+ #define SPI_SPEED       8000000
+-#define SPI_DEV_PATH    "/dev/spidev0.0"
+-//#define SPI_DEV_PATH    "/dev/spidev32766.0"
++//#define SPI_DEV_PATH    "/dev/spidev0.0"
++#define SPI_DEV_PATH    "/dev/spidev32766.1"
+ 
+ /* -------------------------------------------------------------------------- */
+ /* --- PUBLIC FUNCTIONS DEFINITION ------------------------------------------ */
+@@ -173,7 +173,7 @@
+     if ((address & 0x80) != 0) {
+         DEBUG_MSG("WARNING: SPI address > 127\n");
+     }
+-
++	//spi_mux_mode = LGW_SPI_MUX_MODE0;
+     spi_device = *(int *)spi_target; /* must check that spi_target is not null beforehand */
+ 
+     /* prepare frame to be sent */
+@@ -212,11 +212,11 @@
+ /* Simple read */
+ int lgw_spi_r(void *spi_target, uint8_t spi_mux_mode, uint8_t spi_mux_target, uint8_t address, uint8_t *data) {
+     int spi_device;
+-    uint8_t out_buf[3];
++    uint8_t out_buf[3]={0};
+     uint8_t command_size;
+     uint8_t in_buf[ARRAY_SIZE(out_buf)];
+-    struct spi_ioc_transfer k;
+-    int a;
++    struct spi_ioc_transfer k[2];
++    int a,i;
+ 
+     /* check input variables */
+     CHECK_NULL(spi_target);
+@@ -226,7 +226,7 @@
+     CHECK_NULL(data);
+ 
+     spi_device = *(int *)spi_target; /* must check that spi_target is not null beforehand */
+-
++	//spi_mux_mode = LGW_SPI_MUX_MODE0;
+     /* prepare frame to be sent */
+     if (spi_mux_mode == LGW_SPI_MUX_MODE1) {
+         out_buf[0] = spi_mux_target;
+@@ -235,20 +235,22 @@
+         command_size = 3;
+     } else {
+         out_buf[0] = READ_ACCESS | (address & 0x7F);
+-        out_buf[1] = 0x00;
+-        command_size = 2;
++       // out_buf[1] = 0x00;
++        command_size = 1;
+     }
+ 
+     /* I/O transaction */
+     memset(&k, 0, sizeof(k)); /* clear k */
+-    k.tx_buf = (unsigned long) out_buf;
+-    k.rx_buf = (unsigned long) in_buf;
+-    k.len = command_size;
+-    k.cs_change = 0;
+-    a = ioctl(spi_device, SPI_IOC_MESSAGE(1), &k);
++    k[0].tx_buf = (unsigned long) out_buf;
++    k[1].rx_buf = (unsigned long) in_buf;
++    k[0].len = command_size;
++    k[1].len = command_size;
++    k[0].cs_change = 0;
++    k[1].cs_change = 1;
++    a = ioctl(spi_device, SPI_IOC_MESSAGE(2), &k);
+ 
+     /* determine return code */
+-    if (a != (int)k.len) {
++    if (a != (int)k[1].len + (int)k[0].len) {
+         DEBUG_MSG("ERROR: SPI READ FAILURE\n");
+         return LGW_SPI_ERROR;
+     } else {
+@@ -269,7 +271,7 @@
+     int size_to_do, chunk_size, offset;
+     int byte_transfered = 0;
+     int i;
+-
++	//spi_mux_mode = LGW_SPI_MUX_MODE0;
+     /* check input parameters */
+     CHECK_NULL(spi_target);
+     if ((address & 0x80) != 0) {
+@@ -299,7 +301,7 @@
+     k[0].tx_buf = (unsigned long) &command[0];
+     k[0].len = command_size;
+     k[0].cs_change = 0;
+-    k[1].cs_change = 0;
++    k[1].cs_change = 1;
+     for (i=0; size_to_do > 0; ++i) {
+         chunk_size = (size_to_do < LGW_BURST_CHUNK) ? size_to_do : LGW_BURST_CHUNK;
+         offset = i * LGW_BURST_CHUNK;
+@@ -342,7 +344,7 @@
+         DEBUG_MSG("ERROR: BURST OF NULL LENGTH\n");
+         return LGW_SPI_ERROR;
+     }
+-
++	//spi_mux_mode = LGW_SPI_MUX_MODE0;
+     spi_device = *(int *)spi_target; /* must check that spi_target is not null beforehand */
+ 
+     /* prepare command byte */
+@@ -361,7 +363,7 @@
+     k[0].tx_buf = (unsigned long) &command[0];
+     k[0].len = command_size;
+     k[0].cs_change = 0;
+-    k[1].cs_change = 0;
++    k[1].cs_change = 1;
+     for (i=0; size_to_do > 0; ++i) {
+         chunk_size = (size_to_do < LGW_BURST_CHUNK) ? size_to_do : LGW_BURST_CHUNK;
+         offset = i * LGW_BURST_CHUNK;

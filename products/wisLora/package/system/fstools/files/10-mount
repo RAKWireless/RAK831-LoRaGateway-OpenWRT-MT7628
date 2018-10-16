@@ -1,0 +1,28 @@
+/sbin/block hotplug
+
+case "$ACTION" in
+	add)
+		for i in $(ls /dev/ | grep 'sd[a-z][1-9]')
+		do
+			mkdir -p /mnt/$i 
+			mount -o rw /dev/$i /mnt/$i 
+			if [ $? -ne 0 ]
+			then 
+				mount -o rw /dev/$i /mnt/$i 
+			fi
+		done
+	;;
+
+	remove)
+		MOUNT=`mount | grep -o '/mnt/sd[a-z][1-9]'`
+		for i in $MOUNT
+		do
+			umount $i
+			if [ $? -eq 0 ]
+			then
+				rm $i -r
+
+			fi
+		done
+	;;
+esac
