@@ -1,5 +1,5 @@
 # Welcome to the WisLora wiki!
-The WisLora is WisAp and Lora gateway, here to use RAK831
+The WisLora is WisAp(Mt7628 + OpenWRT) and Lora gateway, here to use RAK831
 
 ## OverView
 WisAp:
