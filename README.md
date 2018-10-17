@@ -111,8 +111,9 @@ check the gateway ID(Gateway EUI) and server address ,make sure they are consist
 	
 6. Start Lora Gateway
 
-  reset_lgw.sh start
-	/usr/bin/packet_forwarder/lora_pkt_fwd
+    reset_lgw.sh start  
+    /usr/bin/packet_forwarder/lora_pkt_fwd
+	
 
 Finally you can see the Status is connected in the gateway overview, then the gateway will be started and you can use it.
 <div align=center> <img src="https://github.com/RAKWireless/wiscore/blob/master/img/ThingsC_con.png" /> </div>
