@@ -1,24 +1,118 @@
-# WisCore SDK
-<div align=center><img src="https://github.com/RAKWireless/WisCore/raw/master/img/inf_reg_wiscore.png"/></div>
+# Welcome to the WisLora wiki!
+The WisLora is WisAp and Lora gateway, here to use RAK831
 
-![](https://github.com/RAKWireless/WisCore/raw/master/img/inf_reg_pic1.png)
+## OverView
+WisAp:
+<div align=center> <img src="https://github.com/RAKWireless/wiscore/raw/master/img/wisap_overview.png" /> </div>
+RAK831:
+<div align=center> <img src="https://github.com/RAKWireless/wiscore/raw/master/img/RAK831.png" /> </div>
+Here the RAK831 is Lora Gateway
 
-This SDK is for WisCore hardware development platform base on OpenWrt system. Software features include three product series: WisAp, WisAvs(Amazon Alexa Avs function), WisGw(wiscore gateway)
+## Connect RAK831 To WisAp
 
-If you are the first compiler SDK you need to choose to use the product type and then set the compiler environment. so that the next time you recompile the same types of products when there is no need to in the environmental settings unless you want to switch to other types of products
+	RAK831 		WisAp
+	  
+	  5V    <===>    5V
+	  
+	  GND   <===>    GND
+	  
+	  RST   <===>    GPIO0
 
-## OpenWrt Build System - Installation
+	  SCK   <===>    SPI_CLK
 
-* The WisCore-SDk depends on "OpenWrt", so before compiler you need install some tools - [Installation for SDK](https://wiki.openwrt.org/doc/howto/buildroot.exigence)
+	  CSN   <===> 	 SPI_CS
 
-* Get compile tools for WisCore
+	  MISO  <===>    SPI_MISO
 
-## Product
+	  MOSI  <===>    SPI_MOSI
 
-* [How to use WisCore](https://github.com/RAKWireless/wiscore/wiki/WisCore)
-* [How to use WisAp](https://github.com/RAKWireless/wiscore/wiki/WisAp)
-* [How to use WisLora](https://github.com/RAKWireless/wiscore/wiki/WisLora)
 
-## Please refer to the use of more detailed introduction
-* [get_quick_started_with_wiscore](https://github.com/RAKWireless/WisCore)
-* [get_quick_started_with_linkitsmart7688](https://github.com/RAKWireless/QuickStart-Alexa-In-LinkitSmart7688)
+## Required Hardware	
+
+Before you get started, let's review what you'll need.<br>	
+1. WisAp development board -  Buy at Rakwireless - [wisapBoard](https://www.aliexpress.com/store/product/WisAP-MT7628-open-source-hardware-routing-gateway-Openwrt-Arduino-intelligent-speech-recognition-module/2805180_32791851425.html?spm=2114.12010615.0.0.19224b5bsq3LC5)<br> 	
+2. Micro-USB power cable<br>
+3. Lora Gateway - [RAK831](https://www.aliexpress.com/store/product/RAK831-LoRa-LoRaWAN-Gateway-Module-433-868-915MHz-base-on-SX1301-Wireless-Spread-Spectrum-Transmission-range/2805180_32832894046.html?spm=2114.12010615.0.0.52c53549b1zqQa)<br> 	
+
+## Compile SDK
+
+Compile dependency with ubuntu 16.04
+
+	sudo apt-get install build-essential subversion git-core libncurses5-dev zlib1g-dev gawk flex quilt libssl-dev xsltproc libxml-parser-perl mercurial bzr ecj cvs unzip
+
+### Step 1: Clone SDK
+Open terminal, and type the following:<br>
+
+    cd Desktop
+    git clone https://github.com/RAKWireless/RAK831-LoRaGateway-OpenWRT-MT7628.git
+
+
+### Step 2: to set compile environment
+Before you run make, you need to set compile environment first with envsetup.sh.
+
+    cd ~/Desktop/RAK831-LoRaGateway-OpenWRT-MT7628
+    ./build/envsetup.sh
+
+### Step 3: Run Make to compile
+
+	make
+
+Finally compiled generated files firmware in the folder out/target/bin
+
+
+## Burn firmware to the board
+
+    cp ~/Desktop/RAK831-LoRaGateway-OpenWRT-MT7628/out/target/bin/firmware /windows/
+
+[How to burn firmware to Board](https://github.com/RAKWireless/wiscore/wiki/Burn-firmware-to-MT762x-Board)<br>
+
+
+## To Use LoraGW
+
+1. Register an account in [The Things Network Control](https://console.thethingsnetwork.org), then login and register gateway
+
+* Click "GATEWAYS"
+<div align=center> <img src="https://github.com/RAKWireless/wiscore/blob/master/img/ThingsC_home.png" /> </div>
+
+* Click "register gateway"
+<div align=center> <img src="https://github.com/RAKWireless/wiscore/blob/master/img/ThingsC_reg1.png" /> </div>
+
+* Fill in, "Gateway EUI" is unique and must consist of exactly 8 bytes hexadecimal, and choose "Frequency Plan", here use 868MHz
+<div align=center> <img src="https://github.com/RAKWireless/wiscore/blob/master/img/ThingsC_reg2.png" /> </div>
+
+* Click "Register Gateway"
+<div align=center> <img src="https://github.com/RAKWireless/wiscore/blob/master/img/ThingsC_reg3.png" /> </div>
+
+* Finally you will see the gateway overview, and Status is not connected
+<div align=center> <img src="https://github.com/RAKWireless/wiscore/blob/master/img/ThingsC_reg4.png" /> </div>
+
+2. Connect RAK831 to WisAp
+
+3. Power on, then [setup wifi](https://github.com/RAKWireless/wiscore/wiki/Setup-Wireless)
+
+4. Check the connection of RAK831 and WisAp, excute:
+
+	/usr/bin/lora/test_loragw_reg
+
+It will display:
+<div align=center> <img src="https://github.com/RAKWireless/wiscore/blob/master/img/RAK831_WisAp_Spi.png" /> </div>
+
+if failed, you need check the connnection, or you need restart lora gateway first and try again:
+
+	reset_lgw.sh start
+
+5. Check the ID and Service
+
+check the gateway ID(Gateway EUI) and server address ,make sure they are consistent with [The Things Network Control](https://console.thethingsnetwork.org),
+
+	vi /usr/bin/packet_forwarder/local_conf.json
+
+<div align=center> <img src="https://github.com/RAKWireless/wiscore/blob/master/img/wislora_global.png" /> </div>
+	
+6. Start Lora Gateway
+
+  reset_lgw.sh start
+	/usr/bin/packet_forwarder/lora_pkt_fwd
+
+Finally you can see the Status is connected in the gateway overview, then the gateway will be started and you can use it.
+<div align=center> <img src="https://github.com/RAKWireless/wiscore/blob/master/img/ThingsC_con.png" /> </div>
