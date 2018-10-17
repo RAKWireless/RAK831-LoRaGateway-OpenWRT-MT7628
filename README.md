@@ -1,5 +1,5 @@
 # Welcome to the WisLora wiki!
-The WisLora is WisAp(Mt7628 + OpenWRT) and Lora gateway, here to use RAK831
+The WisLora is WisAp(Mt7628 + OpenWRT) and Lora gateway, here to use RAK831. It is based on the latest SX1301 driver lora_gateway v5.0.1 and semtech packet_forwarder v4.0.1. We've tested it with TTN.
 
 ## OverView
 WisAp:
