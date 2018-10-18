@@ -111,8 +111,7 @@ check the gateway ID(Gateway EUI) and server address ,make sure they are consist
 	
 6. Start Lora Gateway
 
-    reset_lgw.sh start  
-    /usr/bin/packet_forwarder/lora_pkt_fwd
+power on the Gateway and the packet_forwarder will auto start. check the log file at /usr/bin/packet_forwarder/log
 	
 
 Finally you can see the Status is connected in the gateway overview, then the gateway will be started and you can use it.
