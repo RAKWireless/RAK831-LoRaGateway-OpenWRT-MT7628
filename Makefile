@@ -10,7 +10,7 @@ KERNEL_BIN=openwrt-ramips-mt7628-mt7628-squashfs-sysupgrade.bin
 .PHONY: compile clean install uninstall
 
 compile:
-	sh ./build/envsetup.sh
+#	sh ./build/envsetup.sh
 	@echo "Building openwrt..."
 	$(MAKE) -C $(OPWRT_WORKSPACE) -j1 V=s
 	cp $(OPWRT_WORKSPACE)/bin/ramips/$(KERNEL_BIN) out/target/bin

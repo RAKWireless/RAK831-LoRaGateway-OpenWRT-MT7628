@@ -3,5 +3,6 @@
 # for zl38062 reset pin
 # start wisap application
 msload_go.sh
+packet_start.sh
 
 exit 0
