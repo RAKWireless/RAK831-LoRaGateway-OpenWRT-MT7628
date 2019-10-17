@@ -26,6 +26,8 @@ Here the RAK831 is Lora Gateway
 
 	  MOSI  <===>    SPI_MOSI
 
+## Compilation environment requirements:
+Ubuntu16, gcc version 5.x
 
 ## Required Hardware	
 
